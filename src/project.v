@@ -4,6 +4,8 @@
  */
 
 `default_nettype none
+`include "ips/breathing_led.v"
+
 
 module tt_um_example (
     input  wire [7:0] ui_in,    // Dedicated inputs
@@ -25,8 +27,20 @@ module tt_um_example (
   // Assign the lower 4 bits of result to the lower 4 bits of uo_out
   assign uo_out[3:0] = result[3:0];
 
-  // Assign the 5th bit of result to the 5th bit of uo_out
-  assign uo_out[4] = result[4];
+  wire led_breath;
+
+  // Instantiate breathing LED, enabled when overflow bit is high
+
+  breathing_led #(
+      .CLK_FREQ(1_000_000)
+  ) led_inst (
+      .clk(clk),
+      .rst_n(rst_n),
+      .enable(result[4]),
+      .led_out(led_breath)
+  );
+
+  assign uo_out[4] = led_breath;
 
   // Unused upper bits of uo_out are set to 0
   assign uo_out[7:5] = 3'b000;
