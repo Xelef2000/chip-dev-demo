@@ -32,7 +32,7 @@ module tt_um_example (
   // Instantiate breathing LED, enabled when overflow bit is high
 
   breathing_led #(
-      .CLK_FREQ(1_000_000)
+      .CLK_FREQ(100000)
   ) led_inst (
       .clk(clk),
       .rst_n(rst_n),

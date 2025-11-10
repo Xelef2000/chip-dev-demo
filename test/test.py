@@ -15,7 +15,7 @@ async def reset_dut(dut, cycles=5):
 @cocotb.test()
 async def test_adder_lower_bits(dut):
     """Check that uo_out[3:0] = lower 4 bits + upper 4 bits."""
-    clock = Clock(dut.clk, 1, units="us")
+    clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
 
     await reset_dut(dut)
@@ -43,7 +43,8 @@ async def test_breathing_led_pwm(dut):
 
     # Sample uo_out[4] over time to check for PWM toggling
     led_values = []
-    for _ in range(200):
+    sample_cycles = 195 * 10  # sample ~10 brightness steps
+    for _ in range(sample_cycles):
         await ClockCycles(dut.clk, 1)
         led_values.append(dut.uo_out.value.integer >> 4 & 0x1)
 
@@ -71,4 +72,5 @@ async def test_reset_behavior(dut):
     clock = Clock(dut.clk, 1, units="us")
     cocotb.start_soon(clock.start())
 
-    dut.ui_in.val_
+    dut.ui_in.value = 0
+
